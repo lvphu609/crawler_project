@@ -36,8 +36,12 @@ class Crawler extends CI_Controller
         //category
         $cat_link = $json['cat_link'];
         $cat_product = array(
-            'name' => $json['name'],
-            'product_id' => $json['product_id']
+            0 => array(
+                'name' => $json['name'],
+                'product_id' => $json['product_id'],
+                'price' => $json['price'],
+                'image' => $json['images'][0]
+            )
         );
 
         foreach ($cat_link as $category) {
@@ -45,20 +49,29 @@ class Crawler extends CI_Controller
                 $cat = array(
                     'alias' => $key,
                     'name' => $value,
-                    'product' => $cat_product
+                    'product' => $cat_product,
                 );
                 //check exist category alias name
-                /*$isExist = $this->cimongo->get('category')->where(array('alias' => $key));
-                if(count($isExist) == 0){
-                    $this->cimongo->insert('category',$json);
-                }*/
-                $this->cimongo->insert('category',$cat);
-                $myfile = fopen("debug.txt", "w") or die("Unable to open file!");
-                fwrite($myfile, json_encode($cat));
-                fclose($myfile);
+                $isExist = $this->cimongo->get_where('category',array('alias' => $key));
+                if(count($isExist->result_array()) == 0){
+                    //insert new category
+                    $this->cimongo->insert('category',$cat);
+                }else{
+                    //update category
+                    $arrayProd = $isExist->result_array();
+                    $arrayProd = $arrayProd[0]['product'];
+                    array_push($arrayProd,$cat_product[0]);
+                    
+
+                   /* $myfile = fopen("debug.txt", "w") or die("Unable to open file!");
+                    fwrite($myfile, json_encode($arrayProd));
+                    fclose($myfile);*/
+
+                    $this->cimongo->where(array('alias' => $key))->set(array('product' => $arrayProd))->update('category');
+                    // $this->cimongo->update('category',$arrayProd,array('alias' => $key));
+                }
             }
         }
-
         //product
         $this->cimongo->insert('product',$json);
     }
@@ -86,6 +99,12 @@ class Crawler extends CI_Controller
             $object = get_object_vars( $object );
         }
         return array_map( 'objectToArray', $object );
+    }
+
+    public function test(){
+        $isExist = $this->cimongo->get_where('category',array('alias' => "dien_thoai_may_tinh_bang"));
+        $a = $isExist->result_array();
+        var_dump($a[0]['product']);
     }
 
     
