@@ -86,7 +86,7 @@ casper.then(function() {
 				
 				//image product description
 				var prod_desc = this.evaluate(function(prod_id){
-					var imageTemp = $('#productDetails').find('.product-description__block img');
+					/*var imageTemp = $('#productDetails').find('.product-description__block img');
 					var images = [];
 					$.each(imageTemp,function(j,img){
 						key = prod_id + "_desc_image_" + j;
@@ -94,11 +94,11 @@ casper.then(function() {
 						tmp[key] = $(img).attr('data-original');
 						images.push(tmp);
 						$(img).replaceWith(key);
-					});
+					});*/
 					var content = $('#productDetails').find('.product-description__block').html();
 					return  {
 						content: content,
-						images: images
+						// images: images
 					};
 				},prod_id);
 
@@ -111,9 +111,9 @@ casper.then(function() {
 					});
 					return temp;
 				});
-
-				var prod_images = [];
+				
 				//download image product
+				var prod_images = [];
 				for(var i = 0; i<prod_images_link.length; i++){
 					var image_name_link = 'images/'+prod_id+'/product/'+prod_id + "_prod_image_" + i + '.jpg';
 					this.download(prod_images_link[i],image_name_link);
@@ -233,7 +233,7 @@ casper.then(function() {
 					},
 					description: {
 						content: prod_desc.content,
-						images: prod_desc.images
+						// images: prod_desc.images
 					},
 					images: prod_images,
 					comments: comments,
