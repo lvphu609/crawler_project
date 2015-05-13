@@ -252,7 +252,7 @@ casper.then(function() {
 
 				var save_record = this.evaluate(function(record){
 					//call php save record
-					$.post('http://localhost/crawler/index.php/crawler/save'); 
+					$.post('http://localhost/crawler_project/index.php/crawler/save'); 
 				},record);
 			}
 		});
