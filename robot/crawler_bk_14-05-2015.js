@@ -161,13 +161,49 @@ casper.then(function() {
 				var cat_link = this.evaluate(function(){
 					var cat = [];
 					var $cat = $('.header__breadcrumb .header__breadcrumb__wrapper ul li a');
+
+					// convert vn to en
+					var nomarkKeyA=new RegExp('[Ă,Â,Á,À,Ả,Ã,Ạ,Ắ,Ằ,Ẳ,Ẵ,Ặ,Ấ,Ầ ,Ẩ,Ẫ,Ậ]','g');
+					var nomarkKeya=new RegExp('[ă,â,á,à,ả,ã,ạ,ắ,ằ,ẳ,ẵ,ặ,ấ,ầ ,ẩ,ẫ,ậ]','g');
+					var nomarkKeyE=new RegExp('[Ê,É,È,Ẻ,Ẽ,Ẹ,Ế,Ề,Ể,Ễ,Ệ]','g');
+					var nomarkKeye=new RegExp('[ê,é,è,ẻ,ẽ,ẹ,ế,ề,ể,ễ,ệ]','g');
+					var nomarkKeyO=new RegExp('[Ô,Ơ,Ó,Ò,Ỏ,Õ,Ọ,Ố,Ồ,Ổ,Ỗ,Ộ,Ớ,Ờ ,Ở,Ỡ,Ợ]','g');
+					var nomarkKeyo=new RegExp('[ô,ơ,ó,ò,ỏ,õ,ọ,ố,ồ,ổ,ỗ,ộ,ớ,ờ ,ở,ỡ,ợ]','g');
+					var nomarkKeyU=new RegExp('[Ư,Ú,Ù,Ủ,Ũ,Ụ,Ứ,Ừ,Ử,Ữ,Ự]','g');
+					var nomarkKeyu=new RegExp('[ư,ú,ù,ủ,ũ,ụ,ứ,ừ,ử,ữ,ự]','g');
+					var nomarkKeyI=new RegExp('[Í,Ì,Ỉ,Ĩ,Ị]','g');
+					var nomarkKeyi=new RegExp('[í,ì,ỉ,ĩ,ị]','g');
+					var nomarkKeyY=new RegExp('[Ý,Ỳ,Ỷ,Ỹ,Ỵ]','g');
+					var nomarkKeyy=new RegExp('[ý,ỳ,ỷ,ỹ,ỵ]','g');
+					var nomarkKeyD=new RegExp('[Đ]','g');
+					var nomarkKeyd=new RegExp('[đ]','g');
+					var nomarkKeyOther=new RegExp('[!-/,:,\[-^,`,{-~]','g');
+
+					function convertVN(_string)
+					{
+						_string=_string.replace(nomarkKeyOther,'');
+						_string=_string.replace(/ /g,'_');
+						_string=_string.replace(nomarkKeyA,'A');
+						_string=_string.replace(nomarkKeya,'a');
+						_string=_string.replace(nomarkKeyE,'E');
+						_string=_string.replace(nomarkKeye,'e');
+						_string=_string.replace(nomarkKeyO,'O');
+						_string=_string.replace(nomarkKeyo,'o');
+						_string=_string.replace(nomarkKeyU,'U');
+						_string=_string.replace(nomarkKeyu,'u');
+						_string=_string.replace(nomarkKeyI,'I');
+						_string=_string.replace(nomarkKeyi,'i');
+						_string=_string.replace(nomarkKeyY,'Y');
+						_string=_string.replace(nomarkKeyy,'y');
+						_string=_string.replace(nomarkKeyD,'D');
+						_string=_string.replace(nomarkKeyd,'d');
+						return _string;
+					}
 					$.each($cat,function(i,a){
 						var cat_name = $(a).attr('title');
-						var href = $(a).attr('href');
-
-						var href = href.split("/");
-						var cat_alias = href[href.length-2];
-
+						var cat_alias=cat_name.toLowerCase();
+							cat_alias = convertVN(cat_alias);
+							cat_alias = cat_alias.replace(/_+/g, '_');
 						var temp = {};
 						temp[cat_alias] = cat_name;
 						cat.push(temp);
