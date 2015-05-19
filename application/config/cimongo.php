@@ -7,8 +7,8 @@ $config['port'] = 27017;//27757;
 // The database you want to work on
 $config['db'] = "crawler";
 // Required if Mongo is running in auth mode
-$config['user'] = "crawler";
-$config['pass'] = "crawler123";
+$config['user'] = "";
+$config['pass'] = "";
 
 /*  
  * Defaults to FALSE. If FALSE, the program continues executing without waiting for a database response. 
