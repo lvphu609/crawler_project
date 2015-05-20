@@ -5,6 +5,7 @@ class Crawler extends CI_Controller
     public function __construct(){
         parent::__construct();
         $this->load->library('cimongo/cimongo');
+        $this->load->library('array_xml');
     }
 
     public function index(){
@@ -184,7 +185,92 @@ class Crawler extends CI_Controller
         var_dump($a[0]['product']);
     }
 
-    
+    public function split_file(){
+        shell_exec('cd robot/xml_split && split -b 5242880 sitemap-products.xml');
+    }
 
+    public function split(){
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+
+        $source = "robot/xml_split/sitemap-products.xml";
+         // load as string
+         $xmlstr = file_get_contents($source);
+         $xmlcont = new SimpleXMLElement($xmlstr);
+         $count = 1;
+         $head = '<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+         $record = "";
+         $fileId = 1;
+         $countLink = count($xmlcont);
+         $xmlFileNames = $head;
+         foreach($xmlcont as $key => $item) 
+         {
+            $row = '<url><loc>'.$item->loc.'</loc></url>';
+
+            if($count <= 500){
+                
+                if($count == 1 && $fileId == 1){
+                    $record .= $head;
+                }               
+
+                $record .= $row;
+
+                // the last loop
+                if(($fileId*500)+$count ==  $countLink){
+                    $filename = "robot/xml_files/sitemap-products".($fileId+1).".xml";
+                    $xmlFileNames .= '<url><filename>'.substr($filename,6).'</filename></url>';
+                    $file = fopen($filename,"w");
+                    fwrite($file,$this->formatXmlString($record));
+                    fclose($file);
+                }
+
+                $count ++;
+            }
+            else{
+                $count = 1;
+                $filename = "robot/xml_files/sitemap-products".$fileId.".xml";
+                $xmlFileNames .= '<url><filename>'.substr($filename,6).'</filename></url>';
+                $file = fopen($filename,"w");
+                fwrite($file,$this->formatXmlString($record));
+                fclose($file);
+
+                $fileId++;
+                $record = "";
+                $record = $head.$row;
+            }
+         }
+
+        // file xml names
+        $filename = "robot/xml_files/sitemap-products-names.xml";
+        $file = fopen($filename,"w");
+        fwrite($file,$this->formatXmlString($xmlFileNames));
+        fclose($file);
+
+    }
     
+    function formatXmlString($xml){
+        $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
+        $token      = strtok($xml, "\n");
+        $result     = '';
+        $pad        = 0; 
+        $matches    = array();
+        while ($token !== false) : 
+            if (preg_match('/.+<\/\w[^>]*>$/', $token, $matches)) : 
+              $indent=0;
+            elseif (preg_match('/^<\/\w/', $token, $matches)) :
+              $pad--;
+              $indent = 0;
+            elseif (preg_match('/^<\w[^>]*[^\/]>.*$/', $token, $matches)) :
+              $indent=1;
+            else :
+              $indent = 0; 
+            endif;
+            $line    = str_pad($token, strlen($token)+$pad, ' ', STR_PAD_LEFT);
+            $result .= $line . "\n";
+            $token   = strtok("\n");
+            $pad    += $indent;
+        endwhile; 
+        return $result;
+    }
 }
