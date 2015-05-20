@@ -5,7 +5,6 @@ class Crawler extends CI_Controller
     public function __construct(){
         parent::__construct();
         $this->load->library('cimongo/cimongo');
-        $this->load->library('array_xml');
     }
 
     public function index(){

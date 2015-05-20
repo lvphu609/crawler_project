@@ -1,19 +1,6 @@
 
 var links = [];
 var fileXmlNames = [];
-var fileXmlUrls = 
-	[
-		'xml_files/sitemap-products1.xml',
-		'xml_files/sitemap-product01.xml',
-		'xml_files/sitemap-product02.xml',
-		'xml_files/sitemap-product03.xml',
-		'xml_files/sitemap-product04.xml',
-		'xml_files/sitemap-product05.xml',
-		'xml_files/sitemap-product06.xml',
-		'xml_files/sitemap-product07.xml',
-		'xml_files/sitemap-product08.xml' 
-	];
-
 var casper = require('casper').create({
     pageSettings: {
         loadImages:  false,        // The WebPage instance used by Casper will
