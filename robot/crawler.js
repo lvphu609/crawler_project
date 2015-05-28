@@ -62,7 +62,7 @@ casper.then(function(){
 						});
 
 						var prod_price_host = this.evaluate(function(){
-							return $('#mobile-price').text().trim();
+							return $('.mobile-price').text().trim();
 						});
 
 						var catalog_short_brief = this.evaluate(function(){
